@@ -32,6 +32,280 @@
 % \author{Sicun Li \thanks{E-mail: sicun.li@outlook.com}}
 % \date{v\fileversion\ (\filedate)}
 % \maketitle\thispagestyle{empty}
+%
+% \begin{abstract}\noindent
+% 此宏包旨在建立一个简单易用的大连理工大学硕士学位论文模板。
+% \end{abstract}
+%
+% \clearpage
+% \tableofcontents
+% \clearpage
+%
+% \section{实现细节}
+%
+% \subsection{基本信息}
 %    \begin{macrocode}
-\LoadClass[zihao=-4,a4paper,twoside,openright,UTF8,space=auto,fontset=windows]{ctexbook}
+%<cls>\NeedsTeXFormat{LaTeX2e}[2023/06/01]
+%<cls>\ProvidesClass{dlut-thesis}%
+%<cls>[2024/04/22 0.0.1 Dalian University of Technology Thesis Template]
+%    \end{macrocode}
+% error warning info
+%    \begin{macrocode}
+\newcommand\dlut@error[1]{%
+    \ClassError{dlut-thesis}{#1}{}%
+}
+\newcommand\dlut@warning[1]{%
+    \ClassWarning{dlut-thesis}{#1}%
+}
+%    \end{macrocode}
+% key-value
+%    \begin{macrocode}
+\RequirePackage{kvdefinekeys}
+\RequirePackage{kvsetkeys}
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{
+    family=dlut,
+    prefix=dlut@,
+    setkeys=\kvsetkeys{},
+}
+\let\dlut@setup@hook\@empty
+\newcommand\dlutsetup[1]{
+    \let\dlut@setup@hook\@empty
+    \kvsetkeys{dlut}{#1}
+    \dlut@setup@hook
+}
+\newcommand\dlut@define@key[1]{%
+    \kvsetkeys{dlut@key}{#1}%
+}
+\newcommand\dlut@option@hook[2]{%
+    \expandafter\g@addto@macro\csname dlut@#1@@code\endcsname{#2}%
+}
+\kv@set@family@handler{dlut@key}{%
+    \@namedef{dlut@#1@@name}{#1}%
+    \def\dlut@@default{}%
+    \def\dlut@@choices{}%
+    \kv@define@key{dlut@value}{name}{%
+        \@namedef{dlut@#1@@name}{##1}%
+    }%
+    \@namedef{dlut@#1@@check}{}%
+    \@namedef{dlut@#1@@code}{}%
+    \kv@define@key{dlut@value}{choices}{%
+        \def\dlut@@choices{##1}%
+        \@namedef{dlut@#1@@reset}{}%
+        \@namedef{dlut@#1@@check}{%
+            \@ifundefined{%
+                ifdlut@\@nameuse{dlut@#1@@name}@\@nameuse{dlut@\@nameuse{dlut@#1@@name}}%
+            }{%
+                \dlut@error{Invalid value "#1 = \@nameuse{dlut@\@nameuse{dlut@#1@@name}}"}%
+            }%
+            \@nameuse{dlut@#1@@reset}%
+            \@nameuse{dlut@\@nameuse{dlut@#1@@name}@\@nameuse{dlut@\@nameuse{dlut@#1@@name}}true}%
+        }%
+    }%
+    \kv@define@key{dlut@value}{default}{%
+        \def\dlut@@default{##1}%
+    }%
+    \kvsetkeys{dlut@value}{#2}%
+    \@namedef{dlut@\@nameuse{dlut@#1@@name}}{}%
+    \kv@set@family@handler{dlut@choice}{%
+        \ifx\dlut@@default\@empty
+            \def\dlut@@default{##1}%
+        \fi
+        \expandafter\newif\csname ifdlut@\@nameuse{dlut@#1@@name}@##1\endcsname
+        \expandafter\g@addto@macro\csname dlut@#1@@reset\endcsname{%
+            \@nameuse{dlut@\@nameuse{dlut@#1@@name}@##1false}%
+        }%
+    }%
+    \kvsetkeys@expandafter{dlut@choice}{\dlut@@choices}%
+    \expandafter\let\csname dlut@\@nameuse{dlut@#1@@name}\endcsname\dlut@@default
+    \expandafter\ifx\csname dlut@\@nameuse{dlut@#1@@name}\endcsname\@empty\else
+        \@nameuse{dlut@#1@@check}%
+    \fi
+    \kv@define@key{dlut}{#1}{%
+        \@namedef{dlut@\@nameuse{dlut@#1@@name}}{##1}%
+        \@nameuse{dlut@#1@@check}%
+        \@nameuse{dlut@#1@@code}%
+    }%
+}
+%    \end{macrocode}
+% commonly used key-value pairs
+%    \begin{macrocode}
+\dlut@define@key{
+    cover = {
+        default = {硕士学位论文},
+    },
+    header = {
+        default = {大连理工大学硕士学位论文},
+    },
+    title = {
+        default = {论文题目},
+    },
+    title* = {
+        default = {Title of the Thesis},
+        name = title@en,
+    },
+    author = {
+        default = {姓名},
+    },
+    student-id = {
+        name = student@id,
+    },
+    supervisor = {
+        default = {导师姓名},
+    },
+    discipline = {
+        default = {电子科学与技术},
+    },
+}
+\newcommand\dlut@set@student@id{%
+    \ifx\dlut@student@id\@empty
+        \dlutsetup{student-id=0123456789}%
+    \fi
+}
+\dlut@set@student@id
+%    \end{macrocode}
+% 使用\pkg{ctexbook}类。
+%    \begin{macrocode}
+\LoadClass[
+    a4paper,
+    twoside,
+    openright,
+    UTF8,
+    space = auto,
+    fontset = ubuntu,
+    zihao = -4,
+    linespread = 1.25,
+]{ctexbook}
+\setlength{\parskip}{0pt}
+%    \end{macrocode}
+% 字体设置
+%    \begin{macrocode}
+\RequirePackage{fontspec}
+\setmainfont{Times New Roman}
+%    \end{macrocode}
+% 使用\pkg{geometry}宏包。
+%    \begin{macrocode}
+\RequirePackage[
+    paper = a4paper,
+    top = 4.1cm,
+    bottom = 3.5cm,
+    left = 2.5cm,
+    right = 2.5cm,
+    headsep = 1.2cm,
+    headheight = 0.5cm,
+    footskip = 1.65cm,
+]{geometry}
+%    \end{macrocode}
+% title style
+%    \begin{macrocode}
+\renewcommand{\frontmatter}{
+    \if@openright\cleardoublepage\else\clearpage\fi
+    \@mainmatterfalse
+    \pagenumbering{Roman}
+    \pagestyle{plain}
+}
+\renewcommand{\mainmatter}{
+    \if@openright\cleardoublepage\else\clearpage\fi
+    \@mainmattertrue
+    \pagenumbering{arabic}
+    \pagestyle{plain}
+}
+\ctexset{%
+    chapter={
+        name = {},
+        number = {\arabic{chapter}},
+        format = { \CTEXifname{\raggedright\heiti\zihao{3}}{\centering\heiti\zihao{-3}\textbf}},
+        pagestyle = {plain},
+        beforeskip = 4bp,
+        afterskip = 26bp,
+        fixskip = true,
+        lofskip = 0pt,
+        lotskip = 0pt,
+    },
+    section={
+        format = {\heiti\zihao{4}},
+        beforeskip = 14bp,
+        afterskip = 14bp,
+        fixskip = true,
+    },
+    subsection={
+        format = {\raggedright\heiti\zihao{-4}},
+        beforeskip = 13bp,
+        afterskip = 13bp,
+        fixskip = true,
+    },
+    subsubsection={
+        name = {(,)},
+        number = {\arabic{subsubsection}},
+        format = {\raggedright\heiti\zihao{-4}},
+        beforeskip = 12bp,
+        afterskip = 12bp,
+        fixskip = true,
+    }%
+}
+%    \end{macrocode}
+% 使用\pkg{fancyhdr}设置页眉页脚。
+%    \begin{macrocode}
+\RequirePackage{fancyhdr}
+\fancypagestyle{empty}{\fancyhf{}}
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyhead[CO]{\zihao{5}{\songti\dlut@header}}
+    \fancyhead[CE]{\zihao{5}{\songti\dlut@title}}
+    \fancyfoot[C]{\songti\zihao{-5}{$-$~\thepage~$-$}}
+}
+%    \end{macrocode}
+% table of contents
+%    \begin{macrocode}
+\RequirePackage{titletoc}
+\contentsmargin{\z@}
+\titlecontents{chapter}%
+    [0pt]{\songti\zihao{-4}}%
+    {\thecontentslabel\;}{}%
+    {\titlerule*[4bp]{.}\thecontentspage}
+\titlecontents{section}%
+    [2\ccwd]{\songti\zihao{-4}}%
+    {\thecontentslabel\;}{}%
+    {\titlerule*[4bp]{.}\thecontentspage}
+\titlecontents{subsection}%
+    [4\ccwd]{\songti\zihao{-4}}%
+    {\thecontentslabel\;}{}%
+    {\titlerule*[4bp]{.}\thecontentspage}
+\ctexset{
+    listfigurename = 图目录,
+    listtablename = 表目录,
+}
+%    \end{macrocode}
+% 图
+%    \begin{macrocode}
+\RequirePackage{graphicx}
+\RequirePackage[labelformat=simple]{subcaption}
+\renewcommand{\thesubfigure}{(\alph{subfigure})}
+%    \end{macrocode}
+% 表
+%    \begin{macrocode}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+%    \end{macrocode}
+% 利用 \pkg{notoccite} 避免目录中引用编号混乱。
+%    \begin{macrocode}
+\RequirePackage{notoccite}
+%    \end{macrocode}
+% 章节命令。
+%    \begin{macrocode}
+\newcommand\dlutchapter[2]{
+    \chapter{#1}
+    \addcontentsline{\dlut@toc@en}{chapter}%
+        {\protect\numberline{\csname thechapter\endcsname}#2}
+}
+\newcommand\dlutsection[2]{
+    \section{#1}
+    \addcontentsline{\dlut@toc@en}{section}%
+        {\protect\numberline{\csname thesection\endcsname}#2}
+}
+\newcommand\dlutsubsection[2]{
+    \subsection{#1}
+    \addcontentsline{\dlut@toc@en}{subsection}%
+        {\protect\numberline{\csname thesubsection\endcsname}#2}
+}
 %    \end{macrocode}

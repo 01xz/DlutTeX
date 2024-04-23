@@ -16,6 +16,6 @@ $(PACKAGE).pdf: $(SOURCES)
 	xelatex $(PACKAGE).dtx
 
 clean:
-	-rm -rf *.aux *.cls *.glo *.hd *.idx *.log *.out *.pdf
+	-rm -rf *.aux *.cls *.glo *.hd *.idx *.log *.out *.pdf *.toc
 
 .PHONY: all cls doc clean
