@@ -5,7 +5,7 @@
     "vscode": {
       "settings": {},
       "extensions": [
-        "James-Yu.latex-workshop"
+        "mathematic.vscode-latex"
       ]
     }
   }
