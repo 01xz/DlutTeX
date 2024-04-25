@@ -147,22 +147,49 @@
     author = {
         default = {姓名},
     },
-    student-id = {
-        name = student@id,
+    authorid = {
+        default = {1234567890},
     },
     supervisor = {
-        default = {导师姓名},
+        default = {导师姓名~~职务},
     },
     discipline = {
         default = {电子科学与技术},
     },
+    defensedate = {
+        default = {\today},
+    },
+    school = {
+        default = {大连理工大学},
+    },
+    school* = {
+        default = {Dalian University of Technology}
+        name = school@en
+    },
 }
-\newcommand\dlut@set@student@id{%
-    \ifx\dlut@student@id\@empty
-        \dlutsetup{student-id=0123456789}%
-    \fi
+%    \end{macrocode}
+% 设置章节中英文名称。
+%    \begin{macrocode}
+\newcommand\dlut@set@chapter@names{%
+    \def\dlut@abstract@name{摘~~~~~~~~要}
+    \def\dlut@abstract@name@en{ABSTRACT}
+    \def\dlut@keywords@name{关键词：}
+    \def\dlut@keywords@name@en{Key Words:~}
+    \def\dlut@toc@name{目~~~~~~~~录}
+    \def\dlut@toc@name@en{TABLE OF CONTENTS}
+    \def\dlut@listfigurename{图目录}
+    \def\dlut@listtablename{表目录}
+    \def\dlut@listdenotationname{主要符号表}
+    \def\dlut@references@name{参~~考~~文~~献}
+    \def\dlut@references@name@en{References}
+    \def\dlut@appendix@name{附录}
+    \def\dlut@appendix@name@en{Appendix}
+    \def\dlut@achievements@name{攻读硕士学位期间科研项目及科研成果}
+    \def\dlut@achievements@name@en{Achievements}
+    \def\dlut@acknowledgements@name{致~~~~~~~~谢}
+    \def\dlut@acknowledgements@name@en{Acknowledgements}
 }
-\dlut@set@student@id
+\dlut@set@chapter@names
 %    \end{macrocode}
 % 使用\pkg{ctexbook}类。
 %    \begin{macrocode}
@@ -185,16 +212,19 @@
 %    \end{macrocode}
 % 使用\pkg{geometry}宏包。
 %    \begin{macrocode}
-\RequirePackage[
-    paper = a4paper,
-    top = 4.1cm,
-    bottom = 3.5cm,
-    left = 2.5cm,
-    right = 2.5cm,
-    headsep = 1.2cm,
-    headheight = 0.5cm,
-    footskip = 1.65cm,
-]{geometry}
+\RequirePackage[paper = a4paper]{geometry}
+\newcommand\dlut@set@geometry{%
+    \geometry{
+        top = 4.1cm,
+        bottom = 3.5cm,
+        left = 2.5cm,
+        right = 2.5cm,
+        headsep = 1.2cm,
+        headheight = 0.5cm,
+        footskip = 1.65cm,
+    }%
+}
+\dlut@set@geometry
 %    \end{macrocode}
 % title style
 %    \begin{macrocode}
