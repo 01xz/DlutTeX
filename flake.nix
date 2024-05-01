@@ -1,5 +1,5 @@
 {
-  description = "Dlut Tex";
+  description = "DlutTeX";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
